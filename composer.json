@@ -1,0 +1,37 @@
+{
+    "name": "alfacode-team/hkm-plugin-mqtt",
+    "description": "HKM Kernel plugin providing 'pubsub.mqtt' — a native MQTT 3.1.1 / 5.0 client (QoS 0-2, retain, will, shared subscriptions, TLS) and the kernel's PubSubPort over it. No MQTT library.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["hkm-kernel", "plugin", "php", "pubsub.mqtt", "mqtt", "mqtt5", "iot", "pubsub", "messaging", "openswoole"],
+    "require": {
+        "php": ">=8.4",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
+        "alfacode-team/php-service-platform": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11 || ^12 || ^13"
+    },
+    "suggest": {
+        "ext-openswoole": "Not required. With it, the client's blocking reads yield the coroutine instead of the worker — which is what lets one process hold an MQTT subscription and thousands of WebSocket connections at once."
+    },
+    "autoload": {
+        "psr-4": {
+            "Plugins\\Mqtt\\": ""
+        },
+        "exclude-from-classmap": ["tests/"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Unit\\Plugins\\Mqtt\\": "tests/"
+        }
+    },
+    "extra": {
+        "//": "No MQTT library. The protocol is fifteen packet types over a two-field fixed header, and the parts that are easy to get wrong are the parts a dependency's defaults hide: whether the Remaining Length varint is bounded before it is believed, whether a wildcard in a PUBLISH topic is refused or silently delivered to nobody, whether the Client Identifier is unique per PROCESS (a duplicate makes the broker disconnect the other holder), whether a subscriber sends PINGREQ inside the keep-alive window, and whether the TLS decision comes from configuration or from the port number."
+    },
+    "config": { "sort-packages": true },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

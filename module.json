@@ -1,0 +1,56 @@
+{
+    "name": "mqtt",
+    "version": "1.0.0",
+    "kernel": "^1.21.0",
+    "solves": "pubsub.mqtt",
+    "type": "module",
+    "description": "A native MQTT 3.1.1 and 5.0 client and the kernel's PubSubPort over it. The packet codec, the topic validator and the client state machine are testable without a broker; the transport is one class built on PHP streams so OpenSwoole's coroutine hooks apply. MQTT is length-prefixed and binary, so a topic cannot append a command the way a NATS subject can — the hazards are elsewhere: a Variable Byte Integer that claims 268 MB, a wildcard in a PUBLISH topic that silently reaches nobody, and a Client Identifier reused across processes, which the broker resolves by disconnecting the process that had it.",
+
+    "requires": [],
+
+    "exposes": [],
+
+    "emits": [],
+    "listens": [],
+
+    "commands": [
+        "Plugins\\Mqtt\\Infrastructure\\Cli\\MqttStatusCommand",
+        "Plugins\\Mqtt\\Infrastructure\\Cli\\MqttListenCommand",
+        "Plugins\\Mqtt\\Infrastructure\\Cli\\MqttPublishCommand"
+    ],
+
+    "//daemon": "DELIBERATELY ABSENT. `daemon` pins a SHA-256 per platform and refuses a platform it has no digest for, which needs a broker that publishes one verifiable archive per platform — and no MQTT broker does: mosquitto cuts no GitHub releases at all, NanoMQ ships linux .deb/.rpm only, EMQX has no macOS tarball, mochi-mqtt ships no binaries. Inventing an unverified download path for this one plugin would put a hole in the mechanism every other plugin relies on. README 'Getting a broker' lists the three real options, one of which is the nats-server this toolchain ALREADY pins — it speaks MQTT 3.1.1 natively, so a project running the NATS plugin adds a listener rather than a second daemon.",
+
+    "config": [
+        { "key": "MQTT_URL", "type": "string", "required": false, "default": "mqtt://127.0.0.1:1883" },
+        { "key": "MQTT_CLIENT_ID", "type": "string", "required": false },
+        { "key": "MQTT_CLIENT_ID_PREFIX", "type": "string", "required": false, "default": "hkm" },
+        { "key": "MQTT_USER", "type": "string", "required": false },
+        { "key": "MQTT_PASS", "type": "string", "required": false },
+        { "key": "MQTT_VERSION", "type": "string", "required": false, "default": "5" },
+        { "key": "MQTT_KEEP_ALIVE", "type": "int", "required": false, "default": 60 },
+        { "key": "MQTT_CLEAN_START", "type": "bool", "required": false, "default": true },
+        { "key": "MQTT_SESSION_EXPIRY", "type": "int", "required": false, "default": 0 },
+        { "key": "MQTT_QOS", "type": "int", "required": false, "default": 0 },
+        { "key": "MQTT_RETAIN", "type": "bool", "required": false, "default": false },
+        { "key": "MQTT_TOPIC_PREFIX", "type": "string", "required": false },
+        { "key": "MQTT_TOPIC_SEPARATOR", "type": "string", "required": false, "default": "." },
+        { "key": "MQTT_SHARE_NAME", "type": "string", "required": false },
+
+        { "//will": "A will is the broker publishing on this client's behalf when it disappears without a clean DISCONNECT, which is how a status topic stays correct without anybody polling. MQTT_WILL_TOPIC alone turns it on; the other four are meaningless without it, so they are commented out by default rather than given values.",
+          "key": "MQTT_WILL_TOPIC", "type": "string", "required": false },
+        { "key": "MQTT_WILL_PAYLOAD", "type": "string", "required": false },
+        { "key": "MQTT_WILL_QOS", "type": "int", "required": false },
+        { "key": "MQTT_WILL_RETAIN", "type": "bool", "required": false },
+        { "key": "MQTT_WILL_DELAY", "type": "int", "required": false },
+        { "key": "MQTT_TLS", "type": "string", "required": false, "default": "auto" },
+        { "key": "MQTT_TLS_CA", "type": "string", "required": false },
+        { "key": "MQTT_TLS_INSECURE", "type": "bool", "required": false, "default": false },
+        { "key": "MQTT_CONNECT_TIMEOUT", "type": "float", "required": false, "default": 5 },
+        { "key": "MQTT_READ_TIMEOUT", "type": "float", "required": false, "default": 5 },
+        { "key": "MQTT_MAX_PACKET_BYTES", "type": "int", "required": false, "default": 8388608 },
+        { "key": "MQTT_MAX_RECONNECTS", "type": "int", "required": false, "default": 10 },
+        { "key": "MQTT_RECONNECT_WAIT", "type": "float", "required": false, "default": 2 },
+        { "key": "MQTT_FAILURE_COOLDOWN", "type": "float", "required": false, "default": 30 }
+    ]
+}

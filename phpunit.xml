@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         failOnWarning="true"
+         failOnRisky="true"
+         cacheDirectory=".phpunit.cache">
+    <testsuites>
+        <!--
+            Protocol: every byte of the codec, the topic validator and matcher,
+            the framing, the identifier allocator and the client's state
+            machine, driven through an in-memory Connection. No sockets, so
+            these are fast, hermetic, and able to arrange the cases a real
+            broker makes awkward — a packet arriving one byte at a time, a
+            SUBACK and a retained PUBLISH in the same segment, a QoS 2 exchange
+            interrupted after PUBREC, a broker that answers nothing at all.
+        -->
+        <testsuite name="Protocol">
+            <directory>tests</directory>
+            <exclude>tests/SocketTest.php</exclude>
+            <exclude>tests/BrokerTest.php</exclude>
+        </testsuite>
+
+        <!--
+            Socket: the real StreamConnection against a stub broker speaking
+            MQTT in a SECOND PROCESS, over real TCP and real TLS. These catch
+            what an in-memory transport cannot — a partial write, a packet split
+            by the network rather than by a test, a TLS record boundary, a peer
+            verification that silently accepts anything — and they are separate
+            because they bind a port and spawn a process, and they skip rather
+            than fail when they cannot.
+
+            NOT independent verification of the codec: the stub replays bytes
+            written in this repository. That is what the Broker suite is for.
+        -->
+        <testsuite name="Socket">
+            <file>tests/SocketTest.php</file>
+        </testsuite>
+
+        <!--
+            Broker: the ONLY tests here that are not self-referential. They run
+            against a real broker and SKIP without MQTT_TEST_URL, because a
+            suite that needs a daemon to pass is a suite nobody runs.
+
+                MQTT_TEST_URL=mqtt://127.0.0.1:1883 \
+                MQTT_TEST_VERSION=3.1.1 \
+                    vendor/bin/phpunit (testsuite Broker)
+
+            Five real bugs were found this way, each of which had passed the
+            whole Protocol suite. They are pinned in
+            tests/RealBrokerRegressionTest.php so an ordinary run keeps them
+            covered.
+        -->
+        <testsuite name="Broker">
+            <file>tests/BrokerTest.php</file>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include><directory suffix=".php">.</directory></include>
+        <exclude>
+            <directory>tests</directory>
+            <directory>vendor</directory>
+        </exclude>
+    </source>
+</phpunit>

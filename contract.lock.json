@@ -1,0 +1,44 @@
+{
+    "lockVersion": 1,
+    "//": "Every string here is published and held outside this plugin. Entries are added by `ground contract:lock --update` and retired with --deprecate \u2014 never deleted.",
+    "surfaces": {
+        "solves": [
+            "pubsub.mqtt"
+        ],
+        "routes": [],
+        "events": [],
+        "contracts": [],
+        "config": [
+            "MQTT_CLEAN_START",
+            "MQTT_CLIENT_ID",
+            "MQTT_CLIENT_ID_PREFIX",
+            "MQTT_CONNECT_TIMEOUT",
+            "MQTT_FAILURE_COOLDOWN",
+            "MQTT_KEEP_ALIVE",
+            "MQTT_MAX_PACKET_BYTES",
+            "MQTT_MAX_RECONNECTS",
+            "MQTT_PASS",
+            "MQTT_QOS",
+            "MQTT_READ_TIMEOUT",
+            "MQTT_RECONNECT_WAIT",
+            "MQTT_RETAIN",
+            "MQTT_SESSION_EXPIRY",
+            "MQTT_SHARE_NAME",
+            "MQTT_TLS",
+            "MQTT_TLS_CA",
+            "MQTT_TLS_INSECURE",
+            "MQTT_TOPIC_PREFIX",
+            "MQTT_TOPIC_SEPARATOR",
+            "MQTT_URL",
+            "MQTT_USER",
+            "MQTT_VERSION",
+            "MQTT_WILL_DELAY",
+            "MQTT_WILL_PAYLOAD",
+            "MQTT_WILL_QOS",
+            "MQTT_WILL_RETAIN",
+            "MQTT_WILL_TOPIC"
+        ],
+        "permissions": []
+    },
+    "deprecated": {}
+}
